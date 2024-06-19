@@ -110,7 +110,7 @@ function TShirtCards(props) {
       </div>
       <div className="card-description">
         <h2>{tShirt.title}</h2>
-        <p className="price-shirt" >{tShirt.price}</p>
+        <p className="price-shirt" >${tShirt.price}</p>
         <p className="stock-shirt">{tShirt.stock > 0 ? `${tShirt.stock} left!` : `Out of Stock!`}</p>
         {tShirt.stock > 0 && (
           <QuantitySelectBox tshirt={tShirt} onQuantityChange={onQuantityChange} />
