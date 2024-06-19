@@ -1,2 +1,6 @@
-# mtm6404-t-shirts-mart1254
-T-Shirts Assignment 
+# T-Shirts
+
+## Objective
+Use the React framework and the provided files to create a t-shirt storefront.
+
+
