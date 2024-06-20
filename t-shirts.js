@@ -70,89 +70,114 @@ const tshirts = [
 
 console.log("I'm working")
 
+function Title(props){
+  return <h2>{props.title}</h2>
+
+}
+
+
+
 function TShirtImg(props) {
-  const tShirt = props.tshirt
-  const tShirtImg = `/images/${tShirt.image}`
+  // const tShirt = props.tshirt
+  // const tShirtImg = `/images/${tShirt.image}`
 
   return (
-    <img src={tShirtImg} alt={tShirt.title} />
+    <div className="img-container">
+      <img src={`/images/${props.image}`} alt={props.title} />
+    </div>
   )
 }
 
-function QuantitySelectBox(props){
-  const tShirt = props.tshirt
 
+
+function Price({price}){
+  return <p className="price-shirt">$ {price}</p>
+}
+
+
+
+function Stock({stock}){
+  return <p className="stock-shirt">{stock > 0 ? `${stock} left!` : `Out of Stock!`}</p>
+  // {stock > 0 ? `${stock} left!` : `Out of Stock!`}</p>
+}
+
+
+
+function QuantitySelectBox({tshirt, onQuantityChange}){
   const options = []
-
-  for(let i = 1; i <= tShirt.stock; i++){
+  for(let i = 1; i <= tshirt.stock; i++){
     options.push(<option key={i} value={i}>{i}</option>)
   }
 
   function changeHandler(event){
     const value = event.target.value
-    props.onQuantityChange(tShirt, value)
+    onQuantityChange(tshirt, value)
   }
 
   return(
-    <select id="stock" className="select" value={tShirt.quantity} onChange={changeHandler}>
+    <select id="stock" className="select" value={tshirt.quantity} onChange={changeHandler}>
       {options}
     </select>
   )
 }
 
 
-function TShirtCards(props) {
-  const {shirts, onBuy, onQuantityChange} = props
-  const cardsTShirt = shirts.map(tShirt => (
-    <div key={tShirt.title} className="card-shirt">
-      <div className="img-container">
-        <TShirtImg tshirt={tShirt} />
-      </div>
-      <div className="card-description">
-        <h2>{tShirt.title}</h2>
-        <p className="price-shirt" >${tShirt.price}</p>
-        <p className="stock-shirt">{tShirt.stock > 0 ? `${tShirt.stock} left!` : `Out of Stock!`}</p>
-        {tShirt.stock > 0 && (
-          <QuantitySelectBox tshirt={tShirt} onQuantityChange={onQuantityChange} />
-        )}
-        {tShirt.stock > 0 && (
-          <button className="buy" onClick={(event) => {event.preventDefault(); onBuy(tShirt);}}>Buy</button>
-        )}
-      </div>
+
+function Buy({stock, onBuy, tshirt}){
+  function clickHandler(event){
+    event.preventDefault()
+    onBuy(tshirt)
+  }
+
+  return(
+    stock ?
+    <button className="buy" onClick={clickHandler}>Buy</button> : ""
+  )
+}
+
+
+
+function Tshirt({tshirt}){
+  const [stock, setStock] = React.useState(tshirt.stock)
+  const [quantity, setQuantity] = React.useState(tshirt.quantity)
+
+  function handleBuy(){
+     if(stock >= quantity) {
+      setStock(stock - quantity)
+      setQuantity(1)
+    }
+  }
+
+  function handleQuantityChange(tshirt, value){
+    setQuantity(value)
+  }
+
+  return(
+    <div className="card-shirt">
+    <TShirtImg image={tshirt.image} title={tshirt.title}/>
+
+    <div className="card-description">
+      <Title title={tshirt.title}/>
+      <Price price={tshirt.price}/>
+      <Stock stock={stock}/>
+     {stock > 0 && <QuantitySelectBox tshirt={{...tshirt, stock, quantity}} onQuantityChange={handleQuantityChange}/>}
+      <Buy stock={stock} onBuy={handleBuy} tshirt={{...tshirt, stock, quantity}}/>
     </div>
-  ))
-
-  return cardsTShirt
-
+  </div>
+  )
 }
 
 
 
 function App() {
-  const [shirts, setShirts] = React.useState(tshirts)
-
-  function handleBuy(tShirt){
-    setShirts(prevTshirts => prevTshirts.map(item =>
-      item.title === tShirt.title && item.stock > 0 ? {...item, stock: item.stock - tShirt.quantity} : item
-    ))
-  }
-
-  function handleQuantityChange(tShirt, quantity){
-    setShirts(prevTshirts => prevTshirts.map(item => item.title === tShirt.title ? {...item, quantity} : item))
-  }
-
-  
-
   return (
     <React.Fragment>
       <div className="container">
         <h1>T-Shirt Assignment</h1>
         <div id="shirt-container" className="container-grid">
-          <TShirtCards shirts={shirts} onBuy={handleBuy} onQuantityChange={handleQuantityChange} />
+        {tshirts.map(tshirt => <Tshirt key={tshirt.id} tshirt={tshirt} />)}
         </div>
       </div>
-
-
     </React.Fragment>
   )
 }
