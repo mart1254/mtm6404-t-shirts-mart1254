@@ -116,7 +116,7 @@ function TShirtCards(props) {
           <QuantitySelectBox tshirt={tShirt} onQuantityChange={onQuantityChange} />
         )}
         {tShirt.stock > 0 && (
-          <button className="buy" onClick={() => onBuy(tShirt)}>Buy</button>
+          <button className="buy" onClick={(event) => {event.preventDefault(); onBuy(tShirt);}}>Buy</button>
         )}
       </div>
     </div>
