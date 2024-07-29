@@ -83,7 +83,7 @@ function TShirtImg(props) {
 
   return (
     <div className="img-container">
-      <img src={`/images/${props.image}`} alt={props.title} />
+      <img src={`images/${props.image}`} alt={props.title} />
     </div>
   )
 }
